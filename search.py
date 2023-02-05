@@ -92,21 +92,31 @@ def depthFirstSearch(problem):
 
     start = problem.getStartState()
 
+    # LIFO
     stack = util.Stack()
+    #Node: State; Action, Cost
     stack.push((start, [], 0))
 
+    #Set of visited nodes
+    #Keys State; Values: Actions
     explored = {}
 
+    #Loop while there are still frontiers
     while not stack.isEmpty():
+        # Last node entered
         node = stack.pop()
+        # Make sure state not visited
         if node[0] not in explored.keys():
+            #Mark it as visited
             explored[node[0]] = node[1]
+            # Check it reach out Goal State
             if problem.isGoalState(node[0]):
                 return node[1]
 
+            #Loop through all successors from last node entered
             for nextState, nextAction, nextCost in  problem.getSuccessors(node[0]):
                 newNode = (nextState, node[1] + [nextAction], nextCost)
-                print(newNode[1])
+                #Add Node in stack
                 stack.push(newNode)
     
     return node[1]
@@ -118,21 +128,31 @@ def breadthFirstSearch(problem):
 
     start = problem.getStartState()
 
+    #FIFO
     queue = util.Queue()
+    #Node: State; Action, Cost
     queue.push((start, [], 0))
 
+    #Set of visited nodes
+    #Keys State; Values: Actions
     explored = {}
-
+    
+    #Loop while there are still frontiers
     while not queue.isEmpty():
+        # First node entered
         node = queue.pop()
+        # Make sure state not visited
         if node[0] not in explored.keys():
+            #Mark it as visited
             explored[node[0]] = node[1]
+            # Check it reach out Goal State
             if problem.isGoalState(node[0]):
                 return node[1]
 
+            #Loop through all successors from current node 
             for nextState, nextAction, nextCost in  problem.getSuccessors(node[0]):
                 newNode = (nextState, node[1] + [nextAction], nextCost)
-                print(newNode[1])
+                #Add Node in stack
                 queue.push(newNode)
     
     return node[1]
@@ -142,7 +162,36 @@ def uniformCostSearch(problem):
     """Search the node of least total cost first."""
 
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    start = problem.getStartState()
+
+    #FIFO based on priority. Here cost
+    priorityQueue = util.PriorityQueue()
+    #Node: State; Action, Cost 
+    priorityQueue.push((start, [], 0), 0)
+
+    #Set of visited nodes
+    #Keys State; Values: Cost
+    explored = {}
+
+    #Loop while there are still frontiers
+    while not priorityQueue.isEmpty():
+        # First node with least cost
+        node = priorityQueue.pop()
+        # Make sure node not visited and that its cost is less
+        if (node[0] not in explored.keys()) or (node[2] < explored[node[0]]):
+            # Mark node
+            explored[node[0]] = node[2]
+            # Check it reach out Goal State
+            if problem.isGoalState(node[0]):
+                return node[1]
+
+            #Loop through all successors from current node 
+            for nextState, nextAction, nextCost in  problem.getSuccessors(node[0]):
+                newNode = (nextState, node[1] + [nextAction],  node[2] + nextCost)
+                #Add Node in stack with the path cost
+                priorityQueue.update(newNode, node[2] + nextCost)
+    
+    return node[1]
 
 
 def nullHeuristic(state, problem=None):
