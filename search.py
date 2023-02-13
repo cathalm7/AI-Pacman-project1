@@ -135,16 +135,16 @@ def breadthFirstSearch(problem):
 
     #Set of visited nodes
     #Keys State; Values: Actions
-    explored = {}
+    explored = []
     
     #Loop while there are still frontiers
     while not queue.isEmpty():
         # First node entered
         node = queue.pop()
         # Make sure state not visited
-        if node[0] not in explored.keys():
+        if node[0] not in explored:
             #Mark it as visited
-            explored[node[0]] = node[1]
+            explored.append(node[0])
             # Check it reach out Goal State
             if problem.isGoalState(node[0]):
                 return node[1]
@@ -171,16 +171,16 @@ def uniformCostSearch(problem):
 
     #Set of visited nodes
     #Keys State; Values: Cost
-    explored = {}
+    explored = []
 
     #Loop while there are still frontiers
     while not priorityQueue.isEmpty():
         # First node with least cost
         node = priorityQueue.pop()
         # Make sure node not visited and that its cost is less
-        if (node[0] not in explored.keys()) or (node[2] < explored[node[0]]):
+        if (node[0] not in explored):
             # Mark node
-            explored[node[0]] = node[2]
+            explored.append(node[0])
             # Check it reach out Goal State
             if problem.isGoalState(node[0]):
                 return node[1]
@@ -214,7 +214,7 @@ def aStarSearch(problem, heuristic=nullHeuristic):
 
     #Set of visited nodes
     #Keys State; Values: Cost
-    explored = {}
+    explored = []
 
     #Loop while there are still frontiers
     while not priorityQueue.isEmpty():
@@ -224,13 +224,13 @@ def aStarSearch(problem, heuristic=nullHeuristic):
         if problem.isGoalState(node[0]):
             return node[1]
         # Make sure node not visited
-        if node[0] not in explored.keys():
+        if node[0] not in explored:
             # Mark node
-            explored[node[0]] = node[2]
+            explored.append(node[0])
 
             #Loop through all successors from current node 
-            for nextState, nextAction, nextCost in  problem.getSuccessors(node[0]):
-                if nextState not in explored.keys():
+            for nextState, nextAction, nextCost in problem.getSuccessors(node[0]):
+                if nextState not in explored:
                     # Cost of the path about to take
                     pathCost = problem.getCostOfActions(node[1] + [nextAction])
                     # Heuristic differentiate A* and UCS 
