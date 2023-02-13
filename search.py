@@ -206,7 +206,40 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
 
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    start = problem.getStartState()
+    #FIFO based on priority. Here cost
+    priorityQueue = util.PriorityQueue()
+    #Node: State; Action, Cost 
+    priorityQueue.push((start, [], 0), heuristic(start, problem))
+
+    #Set of visited nodes
+    #Keys State; Values: Cost
+    explored = {}
+
+    #Loop while there are still frontiers
+    while not priorityQueue.isEmpty():
+        # First node with least cost
+        node = priorityQueue.pop()
+        # Check it reach out Goal State
+        if problem.isGoalState(node[0]):
+            return node[1]
+        # Make sure node not visited
+        if node[0] not in explored.keys():
+            # Mark node
+            explored[node[0]] = node[2]
+
+            #Loop through all successors from current node 
+            for nextState, nextAction, nextCost in  problem.getSuccessors(node[0]):
+                if nextState not in explored.keys():
+                    # Cost of the path about to take
+                    pathCost = problem.getCostOfActions(node[1] + [nextAction])
+                    # Heuristic differentiate A* and UCS 
+                    newCost = heuristic(nextState, problem)
+                    newNode = (nextState, node[1] + [nextAction], nextCost)
+                    #Add Node in stack with the path cost
+                    priorityQueue.update(newNode, pathCost + newCost)
+        
+    return node[1]
 
 
 # Abbreviations
